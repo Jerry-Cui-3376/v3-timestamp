@@ -46,14 +46,25 @@ Key milestones in this version:
 | `4d437d0650a105a8789c66cbeaaadf2752c40aed7685b4c9dbd9d4291690ff61` | 脱离Hermes衔接方案_思维导图.html | Hermes transition plan — hourglass pipeline self-implementation |
 | `25d01638fb898e06b6af2cfe3b361943f15c1d2ccaf8c49ac7ba41028328dff4` | 架构对比分析.html | Independent comparison: Four Pavilion vs 5 mainstream architectures |
 
+### Dispatcher & Test Results (调度脚本 & 测试结果) — Added 2026-05-01 05:34:31 UTC
+
+| SHA-256 Hash | Document | Description |
+|-------------|----------|-------------|
+| `354f17df02f4a99e529b565cba95a2b111883a6bfe0552cd3faa3ce9930d6ee8` | dispatcher.py | Four Pavilion runtime — the core script replacing Hermes |
+| `c26b6619a3ebe641b347d7423468d9dd097780975aa6b3b1c01295d4b0906f72` | test_routing.py | Mechanical routing test suite (23/23 pass) |
+| `41394e3e89173dc7c4cebe99d3efb698e60b15b497ef55fdd5f7eb74a7653568` | test_simulation.py | 5-role simulation test (SME, manufacturing, retail, legal, finance) |
+| `8c978c01a4041c7e9822c68964629b40425e3f6049d2ef53cc6ac2f5a68d2c1b` | 测试报告.md | Full test report: 5/5 memory, 5/5 knowledge routing, cross-session recall verified |
+
 ---
 
 ### Summary
 
-- **15 documents** total (4 core + 7 test materials + 4 mind maps/analysis)
+- **19 documents** total (4 core + 7 test materials + 4 mind maps/analysis + 4 dispatcher/tests)
 - **65 knowledge points** across 9 industries prepared for testing
 - **1 complete test** executed (SME owner questionnaire, 7/8 accuracy)
 - **1 architecture comparison** completed against Hermes, OpenClaw, Letta, Mem0, LangGraph
+- **1 dispatcher built** — Four Pavilion native runtime, fully functional
+- **5-role simulation** passed: routing 5/5, memory 5/5, cross-session recall 4/5
 
 ### Verification
 
