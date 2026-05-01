@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>四阁架构全览</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, 'PingFang SC', sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; overflow: auto; }
+
+.canvas { position: relative; width: 1500px; min-height: 1550px; margin: 0 auto; padding: 30px 20px; }
+
+.title { text-align: center; margin-bottom: 10px; position: relative; z-index: 1; }
+.title h1 { font-size: 26px; color: #fff; }
+.title p { color: #888; font-size: 13px; margin-top: 4px; }
+
+.node {
+  position: absolute;
+  border-radius: 12px;
+  padding: 14px 18px;
+  z-index: 1;
+  text-align: center;
+}
+.node h3 { font-size: 15px; margin-bottom: 5px; }
+.node p { font-size: 12px; line-height: 1.6; color: #bbb; }
+.node .sub { font-size: 11px; color: #888; margin-top: 4px; }
+
+/* === Color Themes === */
+.c-white { border-color: #fff !important; }
+.c-white h3 { color: #fff; }
+.c-blue { border-color: #3498db !important; }
+.c-blue h3 { color: #3498db; }
+.c-green { border-color: #2ecc71 !important; }
+.c-green h3 { color: #2ecc71; }
+.c-red { border-color: #e74c3c !important; }
+.c-red h3 { color: #e74c3c; }
+.c-orange { border-color: #e67e22 !important; }
+.c-orange h3 { color: #e67e22; }
+.c-yellow { border-color: #f1c40f !important; }
+.c-yellow h3 { color: #f1c40f; }
+.c-gray { border-color: #95a5a6 !important; }
+.c-gray h3 { color: #95a5a6; }
+.c-teal { border-color: #1abc9c !important; }
+.c-teal h3 { color: #1abc9c; }
+.c-purple { border-color: #8e44ad !important; }
+.c-purple h3 { color: #8e44ad; }
+.c-gold { border-color: #f39c12 !important; }
+.c-gold h3 { color: #f39c12; }
+
+.solid {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px solid;
+}
+.dashed {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px dashed;
+}
+.deep-bg {
+  background: linear-gradient(135deg, #0d0d18, #111128);
+  border: 2px solid;
+}
+.dotted {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px dotted;
+}
+.no-border {
+  background: none;
+  border: none;
+}
+
+.principle-box {
+  background: linear-gradient(135deg, #1a0a0a, #1e1010);
+  border: 1px solid #e74c3c44;
+  text-align: left;
+}
+
+.edge-label {
+  position: absolute;
+  z-index: 2;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #0a0a0fcc;
+  white-space: nowrap;
+}
+
+.section-label {
+  position: absolute;
+  z-index: 1;
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.footer { position: absolute; bottom: 15px; width: 100%; text-align: center; color: #555; font-size: 12px; z-index: 1; }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+<div class="title">
+  <h1>四阁架构全览</h1>
+  <p>左：处理线 | 中：沙漏 | 右：记忆线</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- TOP: 日常交互                                                     -->
+<!-- ================================================================ -->
+<div class="node solid c-white" style="left:620px; top:80px; width:240px;">
+  <h3>日常交互</h3>
+  <p>用户输入</p>
+</div>
+
+<!-- 第一道筛选 -->
+<div class="node dashed c-white" style="left:610px; top:180px; width:260px;">
+  <h3>第一道筛选</h3>
+  <p>闲聊 / 身份信息 → 记忆线（右）<br>请求 / 提问 → 处理线（左）</p>
+</div>
+
+<!-- 分支标签 -->
+<div class="section-label" style="left:160px; top:260px; color:#3498db;">[ 处理线 ]</div>
+<div class="section-label" style="left:690px; top:310px; color:#e67e22;">[ 沙漏 ]</div>
+<div class="section-label" style="left:1140px; top:260px; color:#f39c12;">[ 记忆线 ]</div>
+
+<!-- ================================================================ -->
+<!-- 中间：沙漏（两层，服务两条线）                                     -->
+<!-- ================================================================ -->
+
+<!-- 沙漏上层：粗筛（对话中实时） -->
+<div class="node solid c-orange" style="left:600px; top:340px; width:280px;">
+  <h3>沙漏上层 — 粗筛</h3>
+  <p>对话中实时运行<br>规则匹配，机械化分类<br>分类后进入临时缓冲区，即可查询</p>
+</div>
+
+<!-- 粗筛出口标签 -->
+<div class="edge-label" style="left:440px; top:420px; color:#3498db;">事实/数据 →</div>
+<div class="edge-label" style="left:440px; top:445px; color:#2ecc71;">经验/教训 →</div>
+<div class="edge-label" style="left:440px; top:470px; color:#e74c3c;">操作流程 →</div>
+<div class="edge-label" style="left:920px; top:435px; color:#f39c12;">← 用户身份/偏好</div>
+<div class="edge-label" style="left:920px; top:460px; color:#95a5a6;">← 日常闲聊内容</div>
+
+<!-- 沙漏下层：细筛（session结束后） -->
+<div class="node solid c-orange" style="left:600px; top:530px; width:280px;">
+  <h3>沙漏下层 — 细筛</h3>
+  <p>session结束后触发<br>去重去噪：新旧INDEX对比，重复合并<br>瘦身：只留精简结论<br>毕业：重复经验 → 提炼为Skill<br>沉淀：反复出现的偏好 → 潜意识</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- 左分支：处理线                                                    -->
+<!-- ================================================================ -->
+
+<!-- 检索 -->
+<div class="node solid c-blue" style="left:80px; top:340px; width:200px;">
+  <h3>检索加载</h3>
+  <p>用户输入 → 提取关键词<br>→ 匹配INDEX触发词<br>→ 按需加载阁内内容</p>
+  <div class="sub">不全量塞，只拉命中的</div>
+</div>
+
+<!-- 知识阁 -->
+<div class="node solid c-blue" style="left:30px; top:530px; width:170px;">
+  <h3>知识阁</h3>
+  <p>参考书<br>事实、数据、领域知识</p>
+  <div class="sub">INDEX触发词匹配</div>
+</div>
+
+<!-- 经验阁 -->
+<div class="node solid c-green" style="left:230px; top:530px; width:170px;">
+  <h3>经验阁（枢纽）</h3>
+  <p>笔记本<br>做过的事、踩过的坑</p>
+  <div class="sub">自带Skill引用</div>
+</div>
+
+<!-- 技能阁 -->
+<div class="node solid c-red" style="left:430px; top:530px; width:140px;">
+  <h3>技能阁</h3>
+  <p>工具箱<br>可复用操作流程</p>
+</div>
+
+<!-- 搜索 -->
+<div class="node solid c-teal" style="left:30px; top:710px; width:170px;">
+  <h3>联网搜索</h3>
+  <p>不确定就去查<br>查到 → 存入知识阁</p>
+  <div class="sub">铁律：刻进骨头里</div>
+</div>
+
+<!-- 组装回复 -->
+<div class="node solid c-white" style="left:230px; top:710px; width:190px;">
+  <h3>组装回复</h3>
+  <p>知识 + 经验 + 技能<br>+ 潜意识（用户画像）<br>→ 拼prompt → 回答</p>
+</div>
+
+<!-- 经验毕业标签 -->
+<div class="edge-label" style="left:350px; top:630px; color:#e74c3c;">毕业 →</div>
+
+<!-- ================================================================ -->
+<!-- 右分支：记忆线                                                    -->
+<!-- ================================================================ -->
+
+<!-- 日常记忆 -->
+<div class="node solid c-gray" style="left:1000px; top:340px; width:190px;">
+  <h3>日常记忆</h3>
+  <p>session对话记录<br>天然覆盖，不额外存储</p>
+  <div class="sub">"今天聊了什么"</div>
+</div>
+
+<!-- 长期记忆 -->
+<div class="node solid c-yellow" style="left:1230px; top:340px; width:190px;">
+  <h3>长期记忆</h3>
+  <p>一个月以内<br>稳定但仍可能变化</p>
+  <div class="sub">"最近在忙四阁项目"</div>
+</div>
+
+<!-- 浅层潜意识 -->
+<div class="node dashed c-gold" style="left:1060px; top:710px; width:260px;">
+  <h3>浅层潜意识</h3>
+  <p>session结束后接收沉淀物<br>临时存储 + 处理<br>判断维度 → 分发 → 清空</p>
+</div>
+
+<!-- 深层潜意识 -->
+<div class="node deep-bg c-purple" style="left:1060px; top:900px; width:280px;">
+  <h3>深层潜意识（永久存储）</h3>
+  <p>完整用户画像变化轨迹<br>每条带时间戳，只追加不删除<br>调用时只取每个维度最新值<br>历史不加载但可追溯</p>
+</div>
+
+<!-- 维度机制 -->
+<div class="node deep-bg" style="left:1100px; top:1090px; width:220px; border-color:#ffffff22;">
+  <h3 style="color:#ccc;">维度机制</h3>
+  <p>不预定义，自由增长<br>关键词重叠判断新旧<br>动态Excel</p>
+</div>
+
+<!-- 长期记忆直连深层 -->
+<div class="edge-label" style="left:1350px; top:700px; color:#8e44ad;">超1个月 →<br>直接沉淀</div>
+
+<!-- ================================================================ -->
+<!-- 铁律                                                              -->
+<!-- ================================================================ -->
+<div class="node principle-box" style="left:50px; top:900px; width:300px; border-radius:12px; padding:18px;">
+  <h3 style="color:#e74c3c; font-size:14px;">铁律</h3>
+  <p style="font-size:12px; line-height:1.8; color:#bbb;">
+    - 不确定就去查 = 刻进骨头里<br>
+    - 管线机械化，不让模型判断分流<br>
+    - 空白启动是正确的<br>
+    - 存储膨胀但调用精简<br>
+    - 模型自带知识是底子，四阁补缺口
+  </p>
+</div>
+
+<!-- ================================================================ -->
+<!-- SVG Lines                                                         -->
+<!-- ================================================================ -->
+<svg xmlns="http://www.w3.org/2000/svg">
+
+  <!-- 日常交互 → 第一道筛选 -->
+  <line x1="740" y1="125" x2="740" y2="180" stroke="#fff" stroke-width="2" />
+  <polygon points="735,175 740,185 745,175" fill="#fff" />
+
+  <!-- 第一道筛选 → 左（处理线） -->
+  <line x1="610" y1="215" x2="260" y2="340" stroke="#3498db" stroke-width="2" />
+  <polygon points="255,335 258,346 266,338" fill="#3498db" />
+
+  <!-- 第一道筛选 → 沙漏粗筛 -->
+  <line x1="740" y1="240" x2="740" y2="340" stroke="#e67e22" stroke-width="2" />
+  <polygon points="735,335 740,345 745,335" fill="#e67e22" />
+
+  <!-- 第一道筛选 → 右（日常记忆） -->
+  <line x1="870" y1="215" x2="1040" y2="340" stroke="#95a5a6" stroke-width="2" />
+  <polygon points="1034,338 1042,346 1045,335" fill="#95a5a6" />
+
+  <!-- 第一道筛选 → 右（长期记忆） -->
+  <line x1="870" y1="215" x2="1280" y2="340" stroke="#f1c40f" stroke-width="2" />
+  <polygon points="1274,338 1282,346 1285,335" fill="#f1c40f" />
+
+  <!-- 沙漏粗筛 → 沙漏细筛 -->
+  <line x1="740" y1="410" x2="740" y2="530" stroke="#e67e22" stroke-width="2" />
+  <polygon points="735,525 740,535 745,525" fill="#e67e22" />
+
+  <!-- 沙漏粗筛 → 知识阁 -->
+  <line x1="600" y1="380" x2="180" y2="530" stroke="#3498db" stroke-width="1.5" />
+  <polygon points="175,525 178,536 186,528" fill="#3498db" />
+
+  <!-- 沙漏粗筛 → 经验阁 -->
+  <line x1="600" y1="395" x2="340" y2="530" stroke="#2ecc71" stroke-width="1.5" />
+  <polygon points="335,525 338,536 346,528" fill="#2ecc71" />
+
+  <!-- 沙漏粗筛 → 技能阁 -->
+  <line x1="600" y1="405" x2="490" y2="530" stroke="#e74c3c" stroke-width="1.5" />
+  <polygon points="485,525 488,536 496,528" fill="#e74c3c" />
+
+  <!-- 沙漏粗筛 → 记忆线（用户信息） -->
+  <line x1="880" y1="390" x2="1060" y2="390" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="4,4" />
+
+  <!-- 经验 → 技能 毕业 -->
+  <line x1="400" y1="590" x2="430" y2="570" stroke="#e74c3c" stroke-width="1" stroke-dasharray="4,4" />
+
+  <!-- 知识阁 → 搜索 -->
+  <line x1="115" y1="600" x2="115" y2="710" stroke="#1abc9c" stroke-width="1.5" stroke-dasharray="4,4" />
+  <polygon points="110,705 115,715 120,705" fill="#1abc9c" />
+
+  <!-- 搜索 → 知识阁 回存 -->
+  <path d="M 170 715 Q 210 660 180 600" stroke="#3498db" stroke-width="1" stroke-dasharray="4,4" />
+
+  <!-- 阁 → 回复 -->
+  <line x1="150" y1="600" x2="280" y2="710" stroke="#ffffff33" stroke-width="1" stroke-dasharray="3,3" />
+  <line x1="315" y1="600" x2="325" y2="710" stroke="#ffffff33" stroke-width="1" stroke-dasharray="3,3" />
+  <line x1="490" y1="600" x2="380" y2="710" stroke="#ffffff33" stroke-width="1" stroke-dasharray="3,3" />
+
+  <!-- 日常记忆 → 浅层潜意识（session结束后下沉） -->
+  <line x1="1095" y1="410" x2="1150" y2="710" stroke="#f39c12" stroke-width="2" />
+  <polygon points="1145,705 1148,716 1156,708" fill="#f39c12" />
+
+  <!-- 长期记忆 → 浅层潜意识 -->
+  <line x1="1325" y1="410" x2="1230" y2="710" stroke="#f39c12" stroke-width="2" />
+  <polygon points="1225,705 1228,716 1236,708" fill="#f39c12" />
+
+  <!-- 浅层潜意识 → 深层潜意识 -->
+  <line x1="1190" y1="785" x2="1190" y2="900" stroke="#8e44ad" stroke-width="2" />
+  <polygon points="1185,895 1190,905 1195,895" fill="#8e44ad" />
+
+  <!-- 长期记忆 → 深层潜意识（直连，超1个月） -->
+  <path d="M 1400 410 Q 1420 650 1340 900" stroke="#8e44ad" stroke-width="2" stroke-dasharray="6,4" />
+  <polygon points="1335,895 1338,906 1346,898" fill="#8e44ad" />
+
+  <!-- 深层 → 维度机制 -->
+  <line x1="1200" y1="985" x2="1200" y2="1090" stroke="#ffffff33" stroke-width="1" />
+
+  <!-- 深层 → 回流到处理线（调用时拉最新维度值） -->
+  <path d="M 1060 940 Q 800 920 600 800 Q 440 750 420 720" stroke="#8e44ad" stroke-width="2" stroke-dasharray="6,4" />
+  <polygon points="415,725 420,715 425,725" fill="#8e44ad" />
+
+  <!-- 细筛 → 记忆线（沉淀物交给浅层处理） -->
+  <line x1="880" y1="600" x2="1060" y2="730" stroke="#f39c12" stroke-width="1.5" stroke-dasharray="4,4" />
+
+  <!-- 检索 → 各阁 -->
+  <line x1="140" y1="420" x2="100" y2="530" stroke="#3498db" stroke-width="1" stroke-dasharray="3,3" />
+  <line x1="220" y1="420" x2="290" y2="530" stroke="#2ecc71" stroke-width="1" stroke-dasharray="3,3" />
+  <line x1="260" y1="400" x2="460" y2="530" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3,3" />
+
+</svg>
+
+<!-- 回流标签 -->
+<div class="edge-label" style="left:680px; top:860px; color:#8e44ad;">调用时回流（最新维度值拼入prompt）</div>
+
+<!-- 细筛→记忆标签 -->
+<div class="edge-label" style="left:920px; top:650px; color:#f39c12;">沉淀物 →</div>
+
+<!-- session结束标签 -->
+<div class="edge-label" style="left:1000px; top:560px; color:#e67e22;">session结束后</div>
+
+</div>
+
+<div class="footer">四阁项目 — 架构全览 — 2026-05-01</div>
+
+</body>
+</html>
